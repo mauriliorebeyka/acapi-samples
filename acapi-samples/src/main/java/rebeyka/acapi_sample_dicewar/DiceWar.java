@@ -16,11 +16,17 @@ import com.rebeyka.acapi.entities.Game;
 import com.rebeyka.acapi.entities.Play;
 import com.rebeyka.acapi.entities.Player;
 import com.rebeyka.acapi.entities.Trigger;
+import com.rebeyka.acapi.exceptions.WrongPlayerCountException;
 import com.rebeyka.acapi.random.DiceSet;
 import com.rebeyka.acapi.random.DieBuilder;
 
 public class DiceWar extends GameSetup {
-
+	
+	@Override
+	public String getDescription() {
+		return "A simple war of dice";
+	}
+	
 	@Override
 	public void createDefaultAttributes(Player player) {
 		player.getAttributes().put("VP", new Attribute<Integer>(0));
@@ -53,7 +59,7 @@ public class DiceWar extends GameSetup {
 		game.setGameEndActionable(new WinningConditionByAttributeRank(game, "VP"));
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws WrongPlayerCountException {
 		DiceWar diceWar = new DiceWar();
 		diceWar.addPlayer("Player 1");
 		diceWar.addPlayer("Player 2");
