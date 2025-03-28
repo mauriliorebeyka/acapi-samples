@@ -9,10 +9,10 @@
 	<packaging>jar</packaging>
 
 	<name>acapi-samples</name>
-	<url>http://maven.apache.org</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>23</java.version>
 	</properties>
 
 	<dependencies>
@@ -22,21 +22,23 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
 			<version>2.23.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
 			<version>2.23.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>com.rebeyka</groupId>
 			<artifactId>acapi</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-
 	</dependencies>
 </project>
