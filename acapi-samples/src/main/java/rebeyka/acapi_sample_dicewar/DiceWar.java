@@ -2,7 +2,6 @@ package rebeyka.acapi_sample_dicewar;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import com.rebeyka.acapi.actionables.Actionable;
@@ -12,13 +11,13 @@ import com.rebeyka.acapi.actionables.WinningConditionByAttributeRank;
 import com.rebeyka.acapi.actionables.gameflow.EndGameActionable;
 import com.rebeyka.acapi.actionables.gameflow.EndTurnActionable;
 import com.rebeyka.acapi.builders.GameSetup;
-import com.rebeyka.acapi.builders.PlayBuilder;
-import com.rebeyka.acapi.entities.Attribute;
+import com.rebeyka.acapi.check.Checker;
 import com.rebeyka.acapi.entities.Game;
 import com.rebeyka.acapi.entities.Player;
-import com.rebeyka.acapi.entities.Trigger;
+import com.rebeyka.acapi.entities.Types;
+import com.rebeyka.acapi.entities.gameflow.Play;
+import com.rebeyka.acapi.entities.gameflow.Trigger;
 import com.rebeyka.acapi.exceptions.WrongPlayerCountException;
-import com.rebeyka.acapi.random.DiceSet;
 import com.rebeyka.acapi.random.DieBuilder;
 
 public class DiceWar extends GameSetup {
@@ -30,30 +29,30 @@ public class DiceWar extends GameSetup {
 
 	@Override
 	public void createDefaultAttributes(Player player) {
-		player.getAttributes().put("VP", new Attribute<Integer>(0));
+		player.getAttribute("VP", Types.integer()).setValue(0);
 	}
 
 	@Override
-	public List<PlayBuilder> createPlays(Game game, Player player) {
+	public List<Play> createPlays(Game game, Player player) {
 		Supplier<Actionable> throwOneDieActionable = () -> new ThrowDiceSetActionable<Integer>("Throw One Dice",
 				DieBuilder.buildBasicDiceSet(1, 6));
-		Supplier<Actionable> changeAttribute = () -> new ChangeAttributeActionable<DiceSet<Integer>, Integer>("Add VP",
-				"DICE_ROLL", "VP", (s, t) -> s.getValue().getSum() + t.getValue());
-		
-		Predicate<Game> playerTurn = g -> g.getGameFlow().getCurrentPlayer().equals(player);
-		PlayBuilder builder = new PlayBuilder();
-		builder.withOrigin(player).withId("THROW_ONE_DICE").withCondition(playerTurn)
-				.withActionables(Arrays.asList(throwOneDieActionable, changeAttribute));
-		return Arrays.asList(builder);
+		Supplier<Actionable> changeAttribute = () -> new ChangeAttributeActionable<Integer>("Add VP",
+				player.getAttribute("VP", Types.integer()),
+				v -> v + player.getAttribute("DICE_ROLL", Types.diceSetOf(Types.integer())).getValue().getSum());
+
+		Play.Builder builder = new Play.Builder();
+		builder.origin(player).name("THROW_ONE_DICE").condition(Checker.whenPlayable().isCurrentPlayer())
+				.actionables(Arrays.asList(throwOneDieActionable, changeAttribute));
+		return Arrays.asList(builder.build());
 	}
 
 	@Override
 	public void createCommonTriggers(Game game) {
-		PlayBuilder endTurne = new PlayBuilder().withId("End Turn").addActionable(() -> new EndTurnActionable());
+		Play endTurne = new Play.Builder().name("End Turn").actionable(() -> new EndTurnActionable()).build();
 		game.registerAfterTrigger(new Trigger(endTurne, "Add VP"));
-		PlayBuilder endGame = new PlayBuilder().withId("End Game").withGame(game)
-				.addActionable(() -> new EndGameActionable(game));
-		game.registerAfterTrigger(new Trigger(p -> p.getGameFlow().getRound() == 2, endGame, "ALL"));
+		Play endGame = new Play.Builder().name("End Game").game(game)
+				.actionable(() -> new EndGameActionable(game)).build();
+		game.registerAfterTrigger(new Trigger(Checker.whenActionable().custom(p -> p.getParent().getGame().getGameFlow().getRound() == 2), endGame, "ALL"));
 	}
 
 	@Override
