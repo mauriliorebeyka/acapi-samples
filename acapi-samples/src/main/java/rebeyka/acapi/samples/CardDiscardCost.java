@@ -44,12 +44,12 @@ public class CardDiscardCost extends GameSetup {
 			player.getDeck("HAND").add(card);
 		}
 		Cost discardCost = new PlayableSequenceCost("value");
-		Supplier<Actionable> move = () -> new MoveCardActionable("MOVE", player.getDeck("HAND"), player.getDeck("DISCARD"));
-		Supplier<CostActionable> discardCostActionable = () -> new SimpleCostActionable("DISCARD_COST", discardCost,
+		Actionable move = new MoveCardActionable("MOVE", player.getDeck("HAND"), player.getDeck("DISCARD"));
+		CostActionable discardCostActionable = new SimpleCostActionable("DISCARD_COST", discardCost,
 				move);
 
 		discardCost.setCostActionable(discardCostActionable);
-		Supplier<Actionable> throwOneDieActionable = () -> new ThrowDiceSetActionable<Integer>("Throw One Dice",
+		Actionable throwOneDieActionable = new ThrowDiceSetActionable<Integer>("Throw One Dice",
 				DieBuilder.buildBasicDiceSet(1, 6));
 		Play builder = new Play.Builder().name("PLAY").cost(discardCost).origin(player)
 				.actionables(List.of(throwOneDieActionable, move)).build();
