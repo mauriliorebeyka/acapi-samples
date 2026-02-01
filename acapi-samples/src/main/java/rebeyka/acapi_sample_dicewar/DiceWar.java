@@ -2,7 +2,6 @@ package rebeyka.acapi_sample_dicewar;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.rebeyka.acapi.actionables.Actionable;
 import com.rebeyka.acapi.actionables.ChangeAttributeActionable;

@@ -1,7 +1,6 @@
 package rebeyka.acapi.samples;
 
 import java.util.List;
-import java.util.function.Supplier;
 
 import com.rebeyka.acapi.actionables.Actionable;
 import com.rebeyka.acapi.actionables.CostActionable;
