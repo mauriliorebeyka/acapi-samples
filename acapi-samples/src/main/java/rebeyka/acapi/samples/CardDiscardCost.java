@@ -39,10 +39,9 @@ public class CardDiscardCost extends GameSetup {
 	@Override
 	public List<Play> createPlays(Game game, Player player) {
 		for (int i = 0; i < 10; i++) {
-			Card card = new Card(Integer.toString(i));
+			Card card = game.createCard(Integer.toString(i), player);
 			card.getAttribute("value",Types.integer()).setValue(i);
 			player.getDeck("HAND").add(card);
-			card.setGame(game);
 		}
 		Cost discardCost = new PlayableSequenceCost("value");
 		Supplier<Actionable> move = () -> new MoveCardActionable("MOVE", player.getDeck("HAND"), player.getDeck("DISCARD"));

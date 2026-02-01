@@ -16,6 +16,7 @@ import com.rebeyka.acapi.entities.Game;
 import com.rebeyka.acapi.entities.Player;
 import com.rebeyka.acapi.entities.Types;
 import com.rebeyka.acapi.entities.gameflow.Play;
+import com.rebeyka.acapi.entities.gameflow.RankingByAttribute;
 import com.rebeyka.acapi.entities.gameflow.Trigger;
 import com.rebeyka.acapi.exceptions.WrongPlayerCountException;
 import com.rebeyka.acapi.random.DieBuilder;
@@ -58,6 +59,7 @@ public class DiceWar extends GameSetup {
 	@Override
 	public void defineWinningCondition(Game game) {
 		game.setGameEndActionable(new WinningConditionByAttributeRank(game, "VP"));
+		game.setRanking(new RankingByAttribute("VP"));
 	}
 
 	public static void main(String[] args) throws WrongPlayerCountException {
