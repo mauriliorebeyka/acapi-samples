@@ -36,7 +36,7 @@ public class DiceWar extends GameSetup {
 	public List<Play> createPlays(Game game, Player player) {
 		Actionable throwOneDieActionable = new ThrowDiceSetActionable<Integer>("Throw One Dice",
 				DieBuilder.buildBasicDiceSet(1, 6));
-		Actionable changeAttribute = new ChangeAttributeActionable<Integer>("Add VP",
+		Actionable changeAttribute = new ChangeAttributeActionable<Integer>("Add VP",player,
 				player.getAttribute("VP", Types.integer()),
 				v -> v + player.getAttribute("DICE_ROLL", Types.diceSetOf(Types.integer())).getValue().getSum());
 
