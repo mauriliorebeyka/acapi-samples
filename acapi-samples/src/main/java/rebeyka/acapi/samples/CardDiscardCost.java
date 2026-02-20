@@ -1,5 +1,6 @@
 package rebeyka.acapi.samples;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.rebeyka.acapi.actionables.Actionable;
@@ -11,7 +12,9 @@ import com.rebeyka.acapi.actionables.WinningConditionByAttributeRank;
 import com.rebeyka.acapi.builders.GameSetup;
 import com.rebeyka.acapi.entities.Card;
 import com.rebeyka.acapi.entities.Cost;
+import com.rebeyka.acapi.entities.Deck;
 import com.rebeyka.acapi.entities.Game;
+import com.rebeyka.acapi.entities.Playable;
 import com.rebeyka.acapi.entities.Player;
 import com.rebeyka.acapi.entities.Types;
 import com.rebeyka.acapi.entities.cost.PlayableSequenceCost;
@@ -43,7 +46,7 @@ public class CardDiscardCost extends GameSetup {
 			player.getDeck("HAND").add(card);
 		}
 		Cost discardCost = new PlayableSequenceCost("value");
-		Actionable move = new MoveCardActionable("MOVE", player.getDeck("HAND"), player.getDeck("DISCARD"));
+		Actionable move = new MoveCardActionable("MOVE", player.getPlayArea("HAND"), player.getPlayArea("DISCARD"));
 		CostActionable discardCostActionable = new SimpleCostActionable("DISCARD_COST", discardCost,
 				move);
 
@@ -57,7 +60,6 @@ public class CardDiscardCost extends GameSetup {
 
 	@Override
 	public void createCommonTriggers(Game game) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -65,19 +67,18 @@ public class CardDiscardCost extends GameSetup {
 		GameSetup gameSetup = new CardDiscardCost();
 		gameSetup.addPlayer("Player");
 		Game game = gameSetup.newGame();
-		System.out.println(game.findDeck("HAND").getCards());
-//		System.out.println(game.findDeck("DISCARD").getCards());
+		System.out.println(game.findPlayArea("HAND").getAllPlayables());
 		Player player = game.findPlayer("Player");
 		Play play = game.findPlay(player, "PLAY");
-		List<Card> hand = player.getDeck("HAND").getCards();
+		List<Playable> hand = new ArrayList<Playable>(player.getPlayArea("HAND").getAllPlayables());
 		game.declarePlay(play, List.of(hand.get(6)), false);
 		game.setSelectedChoices(List.of(hand.get(8), hand.get(9)));
 		game.executeAll();
 		game.declarePlay(play, List.of(hand.get(1)), false);
 		game.setSelectedChoices(List.of(hand.get(3), hand.get(4)));
 		game.executeAll();
-		System.out.println(game.findDeck("HAND").getCards());
-		System.out.println(game.findDeck("DISCARD").getCards());
+		System.out.println(game.findPlayArea("HAND").getAllPlayables());
+		System.out.println(game.findPlayArea("DISCARD").getAllPlayables());
 	}
 
 }
