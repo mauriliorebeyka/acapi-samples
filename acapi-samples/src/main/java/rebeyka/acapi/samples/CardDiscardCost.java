@@ -12,7 +12,6 @@ import com.rebeyka.acapi.actionables.WinningConditionByAttributeRank;
 import com.rebeyka.acapi.builders.GameSetup;
 import com.rebeyka.acapi.entities.Card;
 import com.rebeyka.acapi.entities.Cost;
-import com.rebeyka.acapi.entities.Deck;
 import com.rebeyka.acapi.entities.Game;
 import com.rebeyka.acapi.entities.Playable;
 import com.rebeyka.acapi.entities.Player;
@@ -67,18 +66,18 @@ public class CardDiscardCost extends GameSetup {
 		GameSetup gameSetup = new CardDiscardCost();
 		gameSetup.addPlayer("Player");
 		Game game = gameSetup.newGame();
-		System.out.println(game.findPlayArea("HAND").getAllPlayables());
+		System.out.println(game.findPlayArea("HAND").getAll());
 		Player player = game.findPlayer("Player");
 		Play play = game.findPlay(player, "PLAY");
-		List<Playable> hand = new ArrayList<Playable>(player.getPlayArea("HAND").getAllPlayables());
+		List<Playable> hand = new ArrayList<Playable>(player.getPlayArea("HAND").getAll());
 		game.declarePlay(play, List.of(hand.get(6)), false);
 		game.setSelectedChoices(List.of(hand.get(8), hand.get(9)));
 		game.executeAll();
 		game.declarePlay(play, List.of(hand.get(1)), false);
 		game.setSelectedChoices(List.of(hand.get(3), hand.get(4)));
 		game.executeAll();
-		System.out.println(game.findPlayArea("HAND").getAllPlayables());
-		System.out.println(game.findPlayArea("DISCARD").getAllPlayables());
+		System.out.println(game.findPlayArea("HAND").getAll());
+		System.out.println(game.findPlayArea("DISCARD").getAll());
 	}
 
 }
