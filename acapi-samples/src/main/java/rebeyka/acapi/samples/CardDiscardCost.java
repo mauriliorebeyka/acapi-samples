@@ -39,6 +39,7 @@ public class CardDiscardCost extends GameSetup {
 
 	@Override
 	public List<Play> createPlays(Game game, Player player) {
+		player.getDeck("DISCARD");
 		for (int i = 0; i < 10; i++) {
 			Card card = game.createCard(Integer.toString(i), player);
 			card.getAttribute("value",Types.integer()).setValue(i);
