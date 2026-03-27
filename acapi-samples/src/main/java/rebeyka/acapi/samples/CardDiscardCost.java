@@ -67,9 +67,9 @@ public class CardDiscardCost extends GameSetup {
 		GameSetup gameSetup = new CardDiscardCost();
 		gameSetup.addPlayer("Player");
 		Game game = gameSetup.newGame();
-		System.out.println(game.findPlayArea("HAND").getAll());
-		Player player = game.findPlayer("Player");
-		Play play = game.findPlay(player, "PLAY");
+		System.out.println(game.find().playArea("HAND").getAll());
+		Player player = game.find().player("Player");
+		Play play = game.find().play(player, "PLAY");
 		List<Playable> hand = new ArrayList<Playable>(player.getPlayArea("HAND").getAll());
 		game.declarePlay(play, List.of(hand.get(6)), false);
 		game.setSelectedChoices(List.of(hand.get(8), hand.get(9)));
@@ -77,8 +77,8 @@ public class CardDiscardCost extends GameSetup {
 		game.declarePlay(play, List.of(hand.get(1)), false);
 		game.setSelectedChoices(List.of(hand.get(3), hand.get(4)));
 		game.executeAll();
-		System.out.println(game.findPlayArea("HAND").getAll());
-		System.out.println(game.findPlayArea("DISCARD").getAll());
+		System.out.println(game.find().playArea("HAND").getAll());
+		System.out.println(game.find().playArea("DISCARD").getAll());
 	}
 
 }
