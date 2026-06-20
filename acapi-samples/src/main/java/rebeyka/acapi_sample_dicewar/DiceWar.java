@@ -8,6 +8,7 @@ import com.rebeyka.acapi.actionables.ChangeAttributeActionable;
 import com.rebeyka.acapi.actionables.ThrowDiceSetActionable;
 import com.rebeyka.acapi.actionables.WinningConditionByAttributeRank;
 import com.rebeyka.acapi.actionables.gameflow.EndGameActionable;
+import com.rebeyka.acapi.actionables.gameflow.EndRoundActionable;
 import com.rebeyka.acapi.actionables.gameflow.EndTurnActionable;
 import com.rebeyka.acapi.builders.GameSetup;
 import com.rebeyka.acapi.builders.ModifierBuilder;
@@ -53,9 +54,11 @@ public class DiceWar extends GameSetup {
 	public void createCommonTriggers(Game game) {
 		Play endTurne = new Play.Builder().name("End Turn").actionable(new EndTurnActionable()).build();
 		game.registerAfterTrigger(new Trigger(endTurne, "Add VP"));
+		Play nextRound = new Play.Builder().name("Next Round").actionable(new EndRoundActionable()).build();
 		Play endGame = new Play.Builder().name("End Game").game(game)
 				.actionable(new EndGameActionable(game)).build();
 		game.registerAfterTrigger(new Trigger(Checker.whenActionable().custom(p -> p.getParent().getGame().getGameFlow().getRound() == 2), endGame, "ALL"));
+		game.registerAfterTrigger(new Trigger(Checker.whenActionable().game().allPlayersPassed(), nextRound, "ALL"));
 	}
 
 	@Override
