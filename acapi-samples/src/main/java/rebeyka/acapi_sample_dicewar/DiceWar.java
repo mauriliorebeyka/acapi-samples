@@ -56,7 +56,7 @@ public class DiceWar extends GameSetup {
 		game.registerAfterTrigger(new Trigger(endTurne, "Add VP"));
 		Play nextRound = new Play.Builder().name("Next Round").actionable(new EndRoundActionable()).build();
 		Play endGame = new Play.Builder().name("End Game").game(game)
-				.actionable(new EndGameActionable(game)).build();
+				.actionable(new EndGameActionable()).build();
 		game.registerAfterTrigger(new Trigger(Checker.whenActionable().custom(p -> p.getParent().getGame().getGameFlow().getRound() == 2), endGame, "ALL"));
 		game.registerAfterTrigger(new Trigger(Checker.whenActionable().game().allPlayersPassed(), nextRound, "ALL"));
 	}
