@@ -28,20 +28,16 @@ public class CardDiscardCost extends GameSetup {
 	}
 
 	@Override
-	public void defineWinningCondition(Game game) {
+	public void gameSetup(Game game) {
 		game.setGameEndActionable(new WinningConditionByAttributeRank(game, "VP"));
 	}
 
 	@Override
-	public void createDefaultAttributes(Player player) {
+	public void playerSetup(Player player) {
 
-	}
-
-	@Override
-	public List<Play> createPlays(Game game, Player player) {
 		player.getDeck("DISCARD");
 		for (int i = 0; i < 10; i++) {
-			Card card = game.createCard(Integer.toString(i), player);
+			Card card = player.getGame().createCard(Integer.toString(i), player);
 			card.getAttribute("value",Types.integer()).setValue(i);
 			player.getDeck("HAND").add(card);
 		}
@@ -53,14 +49,9 @@ public class CardDiscardCost extends GameSetup {
 		discardCost.setCostActionable(discardCostActionable);
 		Actionable throwOneDieActionable = new ThrowDiceSetActionable<Integer>("Throw One Dice",
 				DieBuilder.buildBasicDiceSet(1, 6));
-		Play builder = new Play.Builder().name("PLAY").cost(discardCost).origin(player)
-				.actionables(List.of(throwOneDieActionable, move)).build();
-		return List.of(builder);
-	}
-
-	@Override
-	public void createCommonTriggers(Game game) {
-
+		Play.Builder builder = new Play.Builder().name("PLAY").cost(discardCost).origin(player)
+				.actionables(List.of(throwOneDieActionable, move));
+		player.setPlays(List.of(builder.build()));
 	}
 
 	public static void main(String[] args) {

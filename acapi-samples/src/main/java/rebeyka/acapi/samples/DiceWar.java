@@ -1,4 +1,4 @@
-package rebeyka.acapi_sample_dicewar;
+package rebeyka.acapi.samples;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,15 +31,12 @@ public class DiceWar extends GameSetup {
 	}
 
 	@Override
-	public void createDefaultAttributes(Player player) {
+	public void playerSetup(Player player) {
 		player.getAttribute("VP", Types.integer()).setValue(0);
-	}
 
-	@Override
-	public List<Play> createPlays(Game game, Player player) {
 		Actionable throwOneDieActionable = new ThrowDiceSetActionable<Integer>("Throw One Dice",
 				DieBuilder.buildBasicDiceSet(1, 6));
-		Actionable changeAttribute = new ChangeAttributeActionable<Integer>("Add VP",player,
+		Actionable changeAttribute = new ChangeAttributeActionable<Integer>("Add VP", player,
 				player.getAttribute("VP", Types.integer()),
 
 				v -> v + player.getAttribute("DICE_ROLL", Types.diceSetOf(Types.integer())).getValue().getSum());
@@ -47,24 +44,23 @@ public class DiceWar extends GameSetup {
 		Play.Builder builder = new Play.Builder();
 		builder.origin(player).name("THROW_ONE_DICE").condition(Checker.whenPlayable().isCurrentPlayer())
 				.actionables(Arrays.asList(throwOneDieActionable, changeAttribute));
-		return Arrays.asList(builder.build());
+		player.setPlays(List.of(builder.build()));
 	}
 
 	@Override
-	public void createCommonTriggers(Game game) {
+	public void gameSetup(Game game) {
 		Play endTurne = new Play.Builder().name("End Turn").actionable(new EndTurnActionable()).build();
 		game.registerAfterTrigger(new Trigger(endTurne, "Add VP"));
 		Play nextRound = new Play.Builder().name("Next Round").actionable(new EndRoundActionable()).build();
-		Play endGame = new Play.Builder().name("End Game").game(game)
-				.actionable(new EndGameActionable()).build();
-		game.registerAfterTrigger(new Trigger(Checker.whenActionable().custom(p -> p.getParent().getGame().getGameFlow().getRound() == 2), endGame, "ALL"));
+		Play endGame = new Play.Builder().name("End Game").game(game).actionable(new EndGameActionable()).build();
+		game.registerAfterTrigger(
+				new Trigger(Checker.whenActionable().custom(p -> p.getParent().getGame().getGameFlow().getRound() == 2),
+						endGame, "ALL"));
 		game.registerAfterTrigger(new Trigger(Checker.whenActionable().game().allPlayersPassed(), nextRound, "ALL"));
-	}
 
-	@Override
-	public void defineWinningCondition(Game game) {
-		ModifierBuilder builder = new ModifierBuilder().withAttributeName("VP").withOrigin(game.getPlayers().get(0)).withCondition(Checker.whenPlayable().always()).withUpdateValue(true);
-		game.getModifiers().add(new Modifier<Integer>(builder, a -> a+10));
+		ModifierBuilder builder = new ModifierBuilder().withAttributeName("VP").withOrigin(game.getPlayers().get(0))
+				.withCondition(Checker.whenPlayable().always()).withUpdateValue(true);
+		game.getModifiers().add(new Modifier<Integer>(builder, a -> a + 10));
 		game.setGameEndActionable(new WinningConditionByAttributeRank(game, "VP"));
 		game.setRanking(new RankingByAttribute("VP"));
 	}
